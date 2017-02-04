@@ -3,6 +3,4 @@ set(SOURCES
     main.cpp
 )
 
-message(">> ${CMAKE_CURRENT_BINARY_DIR}")
-
 add_executable(Test ${SOURCES})
