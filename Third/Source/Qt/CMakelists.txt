@@ -1,0 +1,19 @@
+
+set(QT_MODULES
+    Qt5Widgets
+    Qt5Core)
+
+set(QT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE STRING "" FORCE)
+
+set(QT_LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+
+set(QT_LIBRARIES_FILES "")
+foreach(VAR ${QT_MODULES})
+	list(APPEND QT_LIBRARIES_FILES "${QT_LIBRARY_DIR}/${VAR}.lib")
+endforeach()
+
+set(QT_LIBRARIES ${QT_LIBRARIES_FILES} CACHE STRING "" FORCE)
+macro(AddQtDependencies TARGET)
+	message(">>QT_LIBRARIES: ${QT_LIBRARIES}")
+	target_link_libraries(${TARGET} ${QT_LIBRARIES})
+endmacro()
