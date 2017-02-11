@@ -1,7 +1,10 @@
 
 cmake_minimum_required(VERSION 3.7)
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "" FORCE)
+set(BUILD_TARGET Nick CACHE STRING "" FORCE)
+add_custom_target(Nick)
 
+include(common.cmake)
 add_subdirectory(Third)
 
 include(main.cmake)

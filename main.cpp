@@ -4,6 +4,6 @@
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
-	printf("Hello cmake!\n");
-	return 0;
+    printf("Hello cmake!\n");
+    return 0;
 }
