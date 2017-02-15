@@ -8,3 +8,5 @@ include(common.cmake)
 add_subdirectory(Third)
 
 include(main.cmake)
+
+add_subdirectory(Src)

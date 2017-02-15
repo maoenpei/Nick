@@ -1,4 +1,6 @@
 
+set(CMAKE_BUILD_TYPE Release CACHE STRING "" FORCE)
+
 if (${CMAKE_VERSION} VERSION_GREATER 3.0)
     # Disable this policy. Ideally LOCATION property can be replaced by either using the
     # target name directly or by the new generator expression. Unfortunately generator
@@ -18,7 +20,7 @@ function(DeployTargetToTarget TARGET_NAME OWNER_TARGET)
         DEPENDS ${TARGET_NAME}
     )
 
-    set(DeployFileTarget "DEPLOY_${TARGET_NAME}")
+    set(DeployFileTarget "DEPLOY_${OWNER_TARGET}_${TARGET_NAME}")
     add_custom_target(${DeployFileTarget} DEPENDS ${DestinationPath})
 
     add_dependencies(${OWNER_TARGET} ${DeployFileTarget})
@@ -39,7 +41,7 @@ function(DeployFileToTarget FILE_PATH OWNER_TARGET)
     )
 
     string(REGEX REPLACE "[/\\: ()]" "_" FileRef ${FILE_PATH})
-    set(DeployFileTarget "DEPLOY_${FileRef}")
+    set(DeployFileTarget "DEPLOY_${OWNER_TARGET}_${FileRef}")
     add_custom_target(${DeployFileTarget} DEPENDS ${DestinationPath})
 
     add_dependencies(${OWNER_TARGET} ${DeployFileTarget})

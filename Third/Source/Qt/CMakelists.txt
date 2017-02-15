@@ -6,25 +6,40 @@ set(QT_MODULES
     Gui)
 
 set(QT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE STRING "" FORCE)
+set(QT_INCLUDE_DIRS "${QT_INCLUDE_DIR}")
+foreach(VAR ${QT_MODULES})
+    list(APPEND QT_INCLUDE_DIRS "${QT_INCLUDE_DIR}/Qt${VAR}")
+endforeach()
+set(QT_INCLUDES ${QT_INCLUDE_DIRS} CACHE STRING "" FORCE)
 
-set(QT_LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+set(QT_LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib CACHE STRING "" FORCE)
 set(QT_LIBRARIES_FILES "")
 foreach(VAR ${QT_MODULES})
-	list(APPEND QT_LIBRARIES_FILES "${QT_LIBRARY_DIR}/${QT_PREFIX}${VAR}.lib")
+    list(APPEND QT_LIBRARIES_FILES "${QT_LIBRARY_DIR}/${QT_PREFIX}${VAR}.lib")
 endforeach()
 set(QT_LIBRARIES ${QT_LIBRARIES_FILES} CACHE STRING "" FORCE)
 
-set(QT_BIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+set(QT_BIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin CACHE STRING "" FORCE)
 set(QT_SHARED_FILES "")
 foreach(VAR ${QT_MODULES})
-	list(APPEND QT_SHARED_FILES "${QT_BIN_DIR}/${QT_PREFIX}${VAR}.dll")
+    list(APPEND QT_SHARED_FILES "${QT_BIN_DIR}/${QT_PREFIX}${VAR}.dll")
 endforeach()
 set(QT_SHARED ${QT_SHARED_FILES} CACHE STRING "" FORCE)
 
+add_custom_target(QtSharedLibraries)
+foreach(VAR ${QT_SHARED})
+    DeployFileToTarget(${VAR} QtSharedLibraries)
+endforeach()
+
 macro(AddQtDependencies TARGET)
-	target_link_libraries(${TARGET} ${QT_LIBRARIES})
-	message("QT_LIBRARIES ${QT_LIBRARIES}")
-    foreach(VAR ${QT_SHARED})
-    	DeployFileToTarget(${VAR} ${TARGET})
-    endforeach()
+    target_link_libraries(${TARGET} ${QT_LIBRARIES})
+    add_dependencies(${TARGET} QtSharedLibraries)
 endmacro()
+
+function(AddQtExecutable TARGET)
+    add_executable(${TARGET} WIN32 ${ARGN})
+    target_link_libraries(
+        ${TARGET}
+        ${QT_LIBRARY_DIR}/qtmain.lib
+    )
+endfunction()

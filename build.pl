@@ -1,7 +1,8 @@
 
 use Cwd;
 
-print @ARGV[0];
+my $args = join(" ", @ARGV);
+print "args: $args\n";
 
 my $pwd = getcwd();
 my $binary = "$pwd/Third/Binary";
@@ -22,6 +23,6 @@ $ENV{"PATH"} = "$path;$binary";
 my $arguments = "";
 $arguments = "$arguments -DBUILT_DEPLOY=$built/Bin";
 
-my $cmd = "$VsEnv x64 && $cmake $arguments -GNinja $pwd && $ninja Nick";
+my $cmd = "$VsEnv x64 && $cmake $arguments -GNinja $pwd && $ninja Nick $args";
 print "Building command - '$cmd'\n\n";
 system($cmd);
