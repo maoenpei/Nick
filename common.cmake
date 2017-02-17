@@ -8,6 +8,11 @@ if (${CMAKE_VERSION} VERSION_GREATER 3.0)
     cmake_policy(SET CMP0026 OLD)
 endif()
 
+# generate unique name from path
+macro(GenerateRef REF_NAME FILE_PATH)
+    string(REGEX REPLACE "[/\\: ()]" "_" ${REF_NAME} ${FILE_PATH})
+endmacro()
+
 # have to define BUILT_DEPLOY BUILD_TARGET
 function(DeployTargetToTarget TARGET_NAME OWNER_TARGET)
     get_target_property(TargetPath ${TARGET_NAME} LOCATION)
@@ -40,7 +45,7 @@ function(DeployFileToTarget FILE_PATH OWNER_TARGET)
         DEPENDS ${FILE_PATH}
     )
 
-    string(REGEX REPLACE "[/\\: ()]" "_" FileRef ${FILE_PATH})
+    GenerateRef(FileRef ${FILE_PATH})
     set(DeployFileTarget "DEPLOY_${OWNER_TARGET}_${FileRef}")
     add_custom_target(${DeployFileTarget} DEPENDS ${DestinationPath})
 

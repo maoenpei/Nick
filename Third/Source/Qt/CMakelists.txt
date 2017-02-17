@@ -31,10 +31,10 @@ foreach(VAR ${QT_SHARED})
     DeployFileToTarget(${VAR} QtSharedLibraries)
 endforeach()
 
-macro(AddQtDependencies TARGET)
+function(AddQtDependencies TARGET)
     target_link_libraries(${TARGET} ${QT_LIBRARIES})
     add_dependencies(${TARGET} QtSharedLibraries)
-endmacro()
+endfunction()
 
 function(AddQtExecutable TARGET)
     add_executable(${TARGET} WIN32 ${ARGN})
@@ -42,4 +42,28 @@ function(AddQtExecutable TARGET)
         ${TARGET}
         ${QT_LIBRARY_DIR}/qtmain.lib
     )
+endfunction()
+
+set(QT_UIC_EXEC ${QT_BIN_DIR}/uic.exe CACHE STRING "" FORCE)
+function(AddQtUiForTarget TARGET_NAME OUT_FILES)
+    set(ui_files ${ARGN})
+    set(out_files "")
+    add_custom_target(${TARGET_NAME})
+    foreach(var ${ui_files})
+        get_filename_component(infile ${var} ABSOLUTE)
+        get_filename_component(outfile ${var} NAME_WE)
+        set(outfile ${CMAKE_CURRENT_BINARY_DIR}/${outfile}.ui.h)
+
+        add_custom_command(OUTPUT ${outfile}
+            COMMAND ${QT_UIC_EXEC}
+            ARGS -o ${outfile} ${infile}
+            DEPENDS ${infile})
+
+        GenerateRef(OutName ${outfile})
+        add_custom_target(QTUI_${OutName} DEPENDS ${outfile})
+
+        add_dependencies(${TARGET_NAME} QTUI_${OutName})
+        list(APPEND out_files ${outfile})
+    endforeach()
+    set(${OUT_FILES} ${out_files} PARENT_SCOPE)
 endfunction()
