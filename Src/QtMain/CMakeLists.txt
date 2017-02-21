@@ -4,15 +4,16 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-AddQtUiForTarget(QtMain_UI OUT_FILES MainWindow.ui)
-
-include_directories(
-    ${OUT_FILES}
+set(SOURCES
+    QtMain.cpp
+    TagMainWindow.cpp
 )
 
-AddQtExecutable(QtMain QtMain.cpp)
-AddQtDependencies(QtMain)
+set(UI_FILES
+    MainWindow.ui)
 
-add_dependencies(QtMain QtMain_UI)
+AddQtExecutable(QtMain ${SOURCES})
+AddQtDependencies(QtMain)
+AddQtUiForTarget(QtMain ${UI_FILES})
 
 DeployTarget(QtMain)

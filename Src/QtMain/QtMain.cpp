@@ -1,30 +1,15 @@
 
 #include <QApplication>
-#include <QDirModel>
-#include <QSplitter>
-#include <QTreeView>
-#include <QMainWindow>
-
-#include <MainWindow.ui.h>
 
 #include <memory>
 
-class TagMainWindow : public QMainWindow
-{
-    Ui::MainWindow* m_UI;
-public:
-    TagMainWindow()
-        : m_UI(new Ui::MainWindow())
-    {
-        m_UI->setupUi(this);
-        setFixedSize(size());
-    }
-};
+#include "TagMainWindow.h"
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
-    std::shared_ptr<TagMainWindow> mainWin = std::make_shared<TagMainWindow>();
+    std::shared_ptr<View::TagMainWindow> mainWin = std::make_shared<View::TagMainWindow>();
+    mainWin->Initialize();
     mainWin->show();
     return app.exec();
 }

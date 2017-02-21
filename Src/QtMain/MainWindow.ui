@@ -24,10 +24,40 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="addButton">
+   <widget class="QListWidget" name="CurrentTagsList">
     <property name="geometry">
      <rect>
       <x>10</x>
+      <y>50</y>
+      <width>181</width>
+      <height>291</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="TagsToAddList">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>350</y>
+      <width>181</width>
+      <height>211</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="TagsInput">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>570</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="addButton">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
       <y>570</y>
       <width>41</width>
       <height>31</height>
@@ -37,20 +67,7 @@
      <string>Add</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="delButton">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>570</y>
-      <width>41</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Del</string>
-    </property>
-   </widget>
-   <widget class="QListView" name="ItemsList">
+   <widget class="QListWidget" name="ItemsList">
     <property name="geometry">
      <rect>
       <x>200</x>
@@ -59,25 +76,11 @@
       <height>551</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QListWidget" name="listWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>181</width>
-      <height>251</height>
-     </rect>
+    <property name="selectionMode">
+     <enum>QAbstractItemView::MultiSelection</enum>
     </property>
-   </widget>
-   <widget class="QListWidget" name="listWidget_2">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>310</y>
-      <width>181</width>
-      <height>251</height>
-     </rect>
+    <property name="selectionRectVisible">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
