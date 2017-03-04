@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPlainTextEdit" name="AddressInput">
+   <widget class="QTextEdit" name="AddressInput">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -44,7 +44,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPlainTextEdit" name="TagsInput">
+   <widget class="QTextEdit" name="TagsInput">
     <property name="geometry">
      <rect>
       <x>10</x>
