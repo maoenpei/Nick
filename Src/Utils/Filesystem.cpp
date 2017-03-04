@@ -14,11 +14,11 @@ namespace Filesystem{
     {
         std::vector<std::string> filenames;
 
-        boost::filesystem::path dir(path);
+        boost::filesystem::path dir(path + "/");
         boost::filesystem::directory_iterator itr(dir);
         boost::filesystem::directory_iterator itrEnd;
         for (; itr != itrEnd; ++itr) {
-            filenames.push_back(itr->path().string());
+            filenames.push_back(itr->path().filename().string());
         }
         return filenames;
     }
