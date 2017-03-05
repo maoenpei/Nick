@@ -26,6 +26,7 @@ namespace Model{
         {
             return m_path;
         }
+        virtual void setPath(const std::string& path) override;
         virtual std::vector<ITagViewItem*> Items() const override;
 
         virtual void addListener(std::function<void(void)> listener) override;

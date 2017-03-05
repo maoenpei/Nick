@@ -24,6 +24,8 @@ public:
     virtual ~ITagViewModel(){}
 
     virtual std::string Path() const = 0;
+    virtual void setPath(const std::string& path) = 0;
+
     virtual std::vector<ITagViewItem*> Items() const = 0;
 
     virtual void addListener(std::function<void(void)> listener) = 0;

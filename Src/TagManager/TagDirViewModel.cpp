@@ -113,6 +113,11 @@ TagDirViewModel::TagDirViewModel(const std::string& basePath)
     refresh(basePath);
 }
 
+void TagDirViewModel::setPath(const std::string& path)
+{
+    refresh(path);
+}
+
 std::vector<ITagViewItem*> TagDirViewModel::Items() const
 {
     std::vector<ITagViewItem*> items;
