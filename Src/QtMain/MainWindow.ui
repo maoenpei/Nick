@@ -19,9 +19,22 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>801</width>
+      <width>761</width>
       <height>31</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="upButton">
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>10</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>^</string>
     </property>
    </widget>
    <widget class="QListWidget" name="CurrentTagsList">

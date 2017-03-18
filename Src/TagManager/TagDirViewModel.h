@@ -14,7 +14,8 @@ namespace Model{
     {
         Control::MultiConnection<void(void)> m_listeners;
         std::string m_path;
-        std::vector<std::shared_ptr<TagDirViewItem>> m_items;
+        std::vector<std::shared_ptr<TagDirViewItem>> m_children;
+        std::shared_ptr<TagDirViewItem> m_parent;
         friend class TagDirViewItem;
 
         void refresh(const std::string& path);
@@ -27,7 +28,8 @@ namespace Model{
             return m_path;
         }
         virtual void setPath(const std::string& path) override;
-        virtual std::vector<ITagViewItem*> Items() const override;
+        virtual std::vector<ITagViewItem*> Children() const override;
+        virtual ITagViewItem* Parent() const override;
 
         virtual void addListener(std::function<void(void)> listener) override;
     };

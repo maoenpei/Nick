@@ -8,16 +8,16 @@ namespace View {
 
 class EnterWidgetItem : public QListWidgetItem
 {
-    Model::ITagViewItem* m_data;
+    Model::ITagViewItem* m_item;
 public:
-    explicit EnterWidgetItem(Model::ITagViewItem* data, QListWidget *view = Q_NULLPTR)
-        : QListWidgetItem(QString::fromLocal8Bit(data->Name().c_str()), view)
-        , m_data(data)
+    explicit EnterWidgetItem(Model::ITagViewItem* item, QListWidget *view = Q_NULLPTR)
+        : QListWidgetItem(QString::fromLocal8Bit(item->Name().c_str()), view)
+        , m_item(item)
     {}
 
     void Enter()
     {
-        m_data->Enter();
+        m_item->Enter();
     }
 };
 
@@ -43,15 +43,22 @@ void TagMainWindow::Initialize(Model::ITagViewModel* viewModel)
     connect(m_UI->AddressInput, &QLineEdit::textChanged, this, [this](const QString& text) {
         m_spViewModel->setPath(text.toStdString());
     });
+    connect(m_UI->upButton, &QPushButton::clicked, this, [this]() {
+        auto item = m_spViewModel->Parent();
+        if (item) {
+            item->Enter();
+        }
+    });
 }
 
 void TagMainWindow::UpdateView()
 {
     m_UI->AddressInput->setText(QString::fromLocal8Bit(m_spViewModel->Path().c_str()));
     m_UI->ItemsList->clear();
-    for (auto item : m_spViewModel->Items()) {
+    for (auto item : m_spViewModel->Children()) {
         m_UI->ItemsList->addItem(new EnterWidgetItem(item, m_UI->ItemsList));
     }
+    m_UI->upButton->setEnabled(m_spViewModel->Parent() != nullptr);
 }
 
 }
