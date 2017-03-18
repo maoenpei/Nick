@@ -1,6 +1,4 @@
 
-set(CMAKE_BUILD_TYPE Release CACHE STRING "" FORCE)
-
 if (${CMAKE_VERSION} VERSION_GREATER 3.0)
     # Disable this policy. Ideally LOCATION property can be replaced by either using the
     # target name directly or by the new generator expression. Unfortunately generator
@@ -10,7 +8,28 @@ endif()
 
 # generate unique name from path
 macro(GenerateRef REF_NAME FILE_PATH)
-    string(REGEX REPLACE "[/\\: ()]" "_" ${REF_NAME} ${FILE_PATH})
+    set(RefList ${REF_NAME_FILE_PATH_LIST})
+    if(NOT RefList)
+        set(RefList "")
+    endif()
+    list(LENGTH RefList ListLength)
+    math(EXPR LengthSub "${ListLength}-1")
+    if (${ListLength} GREATER 0)
+        foreach(RefIndex RANGE ${LengthSub})
+            list(GET RefList ${RefIndex} RefPath)
+            if (${RefPath} EQUAL ${FILE_PATH})
+                set(FoundIndex ${RefIndex})
+                break()
+            endif()
+        endforeach()
+    endif()
+    if (NOT FoundIndex)
+        set(FoundIndex ${ListLength})
+        list(APPEND RefList ${FILE_PATH})
+        set(REF_NAME_FILE_PATH_LIST "${RefList}" CACHE STRING "" FORCE)
+    endif()
+    set(${REF_NAME} "REF_NAME_${FoundIndex}")
+    #string(REGEX REPLACE "[/\\: ()]" "_" ${REF_NAME} ${FILE_PATH})
 endmacro()
 
 # have to define BUILT_DEPLOY BUILD_TARGET
