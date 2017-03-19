@@ -32,12 +32,12 @@ macro(GenerateRef REF_NAME FILE_PATH)
     #string(REGEX REPLACE "[/\\: ()]" "_" ${REF_NAME} ${FILE_PATH})
 endmacro()
 
-# have to define BUILT_DEPLOY BUILD_TARGET
+# have to define PROJ_DEPLOY BUILD_TARGET
 function(DeployTargetToTarget TARGET_NAME OWNER_TARGET)
     get_target_property(TargetPath ${TARGET_NAME} LOCATION)
     get_filename_component(TargetName ${TargetPath} NAME)
 
-    set(DestinationPath ${BUILT_DEPLOY}/${TargetName})
+    set(DestinationPath ${PROJ_DEPLOY}/${TargetName})
     add_custom_command(
         OUTPUT ${DestinationPath}
         COMMAND ${CMAKE_COMMAND} -E copy ${TargetPath} ${DestinationPath}
@@ -57,7 +57,7 @@ endfunction()
 function(DeployFileToTarget FILE_PATH OWNER_TARGET)
     get_filename_component(TargetName ${FILE_PATH} NAME)
 
-    set(DestinationPath ${BUILT_DEPLOY}/${TargetName})
+    set(DestinationPath ${PROJ_DEPLOY}/${TargetName})
     add_custom_command(
         OUTPUT ${DestinationPath}
         COMMAND ${CMAKE_COMMAND} -E copy ${FILE_PATH} ${DestinationPath}

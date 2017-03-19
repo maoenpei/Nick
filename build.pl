@@ -5,9 +5,11 @@ use Cwd;
 
 # arguments
 my $variant;
+my $verbose;
 
 GetOptions(
-    'variant|v=s' => \$variant,
+    'variant|var=s' => \$variant,
+    'verbose|v!' => \$verbose,
 );
 
 my $args = join(" ", @ARGV);
@@ -37,10 +39,8 @@ if (not $variant) {
 my $VsEnvScript = "\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\"";
 
 # setup build environment
-my $building_type = "Release";
-my %cmake_args = (
-    BUILT_DEPLOY => "$deploy_path/$varName",
-);
+my $building_type = "Debug";
+my %cmake_args = ();
 my $cmake_gen;
 my $pre_cmd;
 my $post_cmd;
@@ -64,15 +64,21 @@ sub BuildNinjaProject{
     $cmake_gen = "Ninja";
     $pre_cmd = "$VsEnvScript x64";
     $post_cmd = "$ninja Nick $args";
+    if ($verbose) {
+        $post_cmd = "$post_cmd -v";
+    }
     $cmake_args{CMAKE_BUILD_TYPE} = $building_type;
 }
 
 $varName or die "Not valid variant!";
 
 # ready to build
-make_path "$internal_path/$varName";
-chdir "$internal_path/$varName";
-print "In working directory: $internal_path/$varName\n";
+my $varDir = "${varName}_${building_type}";
+$cmake_args{PROJ_DEPLOY} = "$deploy_path/$varDir";
+$cmake_args{PROJ_BUILD_TYPE} = "$building_type";
+make_path "$internal_path/$varDir";
+chdir "$internal_path/$varDir";
+print "In working directory: $internal_path/$varDir\n";
 
 # setup cmake command
 my $cmake_args_str = "";

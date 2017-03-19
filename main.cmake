@@ -1,5 +1,5 @@
 
-message("BUILT_DEPLOY ${BUILT_DEPLOY}")
+message("PROJ_DEPLOY:${PROJ_DEPLOY}")
 include_directories(
     ${QT_INCLUDES}
 )

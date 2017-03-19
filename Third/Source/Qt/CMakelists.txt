@@ -5,6 +5,11 @@ set(QT_MODULES
     Core
     Gui)
 
+set(QT_LIB_SUFFIX "" CACHE STRING "" FORCE)
+if (${PROJ_BUILD_TYPE} STREQUAL "Debug")
+    set(QT_LIB_SUFFIX "d" CACHE STRING "" FORCE)
+endif()
+
 set(QT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE STRING "" FORCE)
 set(QT_INCLUDE_DIRS "${QT_INCLUDE_DIR}")
 foreach(VAR ${QT_MODULES})
@@ -15,14 +20,14 @@ set(QT_INCLUDES ${QT_INCLUDE_DIRS} CACHE STRING "" FORCE)
 set(QT_LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib CACHE STRING "" FORCE)
 set(QT_LIBRARIES_FILES "")
 foreach(VAR ${QT_MODULES})
-    list(APPEND QT_LIBRARIES_FILES "${QT_LIBRARY_DIR}/${QT_PREFIX}${VAR}.lib")
+    list(APPEND QT_LIBRARIES_FILES "${QT_LIBRARY_DIR}/${QT_PREFIX}${VAR}${QT_LIB_SUFFIX}.lib")
 endforeach()
 set(QT_LIBRARIES ${QT_LIBRARIES_FILES} CACHE STRING "" FORCE)
 
 set(QT_BIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin CACHE STRING "" FORCE)
 set(QT_SHARED_FILES "")
 foreach(VAR ${QT_MODULES})
-    list(APPEND QT_SHARED_FILES "${QT_BIN_DIR}/${QT_PREFIX}${VAR}.dll")
+    list(APPEND QT_SHARED_FILES "${QT_BIN_DIR}/${QT_PREFIX}${VAR}${QT_LIB_SUFFIX}.dll")
 endforeach()
 set(QT_SHARED ${QT_SHARED_FILES} CACHE STRING "" FORCE)
 
@@ -40,7 +45,7 @@ function(AddQtExecutable TARGET)
     add_executable(${TARGET} WIN32 ${ARGN})
     target_link_libraries(
         ${TARGET}
-        ${QT_LIBRARY_DIR}/qtmain.lib
+        ${QT_LIBRARY_DIR}/qtmain${QT_LIB_SUFFIX}.lib
     )
 endfunction()
 
