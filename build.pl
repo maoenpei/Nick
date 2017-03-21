@@ -93,7 +93,7 @@ $cmake_cmd = "$cmake_cmd $pwd";
 
 # start to build
 print "Building command - '$building_cmd'\n\n";
-open(EXECUTOR, "| cmd.exe /E OFF |");
+open(EXECUTOR, "| cmd.exe /K \"echo off\" |");
 if ($pre_cmd) {
     print EXECUTOR "$pre_cmd\n";
 }
