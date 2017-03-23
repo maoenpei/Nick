@@ -53,7 +53,10 @@ void TagMainWindow::Initialize(Model::ITagViewModel* viewModel)
 
 void TagMainWindow::UpdateView()
 {
+    int cursorPos = m_UI->AddressInput->cursorPosition();
     m_UI->AddressInput->setText(QString::fromLocal8Bit(m_spViewModel->Path().c_str()));
+    m_UI->AddressInput->setCursorPosition(cursorPos);
+
     m_UI->ItemsList->clear();
     for (auto item : m_spViewModel->Children()) {
         m_UI->ItemsList->addItem(new EnterWidgetItem(item, m_UI->ItemsList));

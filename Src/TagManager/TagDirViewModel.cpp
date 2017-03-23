@@ -119,7 +119,7 @@ TagDirViewModel::TagDirViewModel(const std::string& basePath)
 
 void TagDirViewModel::setPath(const std::string& path)
 {
-    refresh(path);
+    refresh(Filesystem::validate_path(path));
 }
 
 std::vector<ITagViewItem*> TagDirViewModel::Children() const

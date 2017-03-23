@@ -2,6 +2,7 @@
 #include "Filesystem.h"
 
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 namespace Filesystem{
 
@@ -21,6 +22,13 @@ namespace Filesystem{
             filenames.push_back(itr->path().filename().string());
         }
         return filenames;
+    }
+
+    std::string validate_path(const std::string& path)
+    {
+        std::string ret = path;
+        boost::algorithm::replace_all(ret, "\\", "/");
+        return ret;
     }
 
 }
