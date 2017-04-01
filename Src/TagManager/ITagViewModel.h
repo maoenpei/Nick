@@ -13,7 +13,7 @@ public:
     virtual ~ITagViewItem(){}
 
     virtual std::string Name() const = 0;
-    virtual std::vector<std::string> Tags() const = 0;
+    virtual const std::vector<std::string>& Tags() const = 0;
 
     virtual void Enter() = 0;
 };

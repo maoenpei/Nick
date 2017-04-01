@@ -6,10 +6,14 @@ use Cwd;
 # arguments
 my $variant;
 my $verbose;
+my $debug;
+my $release;
 
 GetOptions(
     'variant|var=s' => \$variant,
     'verbose|v!' => \$verbose,
+    'debug|d!' => \$debug,
+    'release|r!' => \$release,
 );
 
 my $args = join(" ", @ARGV);
@@ -44,6 +48,10 @@ my %cmake_args = ();
 my $cmake_gen;
 my $pre_cmd;
 my $post_cmd;
+
+if ($release) {
+    $building_type = "Release";
+}
 
 my $varName;
 if ($variant eq "vs") {

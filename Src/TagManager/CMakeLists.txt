@@ -6,6 +6,7 @@ include_directories(
 
 set(SOURCES
     TagDirViewModel.cpp
+    TagDirManager.cpp
 )
 
 add_library(TagManager STATIC ${SOURCES})
