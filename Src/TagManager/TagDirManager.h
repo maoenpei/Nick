@@ -17,7 +17,8 @@ public:
     void Initialize(const std::string& path);
     void Finalize();
 
-    ITagContainer* Container(const std::string& key);
+    virtual ITagContainer* Container(const std::string& key) override;
+    virtual std::vector<std::string> CommonTags(const std::vector<ITagContainer*>& containers) override;
 };
 
 }

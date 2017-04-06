@@ -79,6 +79,9 @@
     <property name="text">
      <string>Add</string>
     </property>
+    <property name="autoDefault">
+     <bool>true</bool>
+    </property>
    </widget>
    <widget class="QListWidget" name="ItemsList">
     <property name="geometry">
@@ -90,7 +93,7 @@
      </rect>
     </property>
     <property name="selectionMode">
-     <enum>QAbstractItemView::MultiSelection</enum>
+     <enum>QAbstractItemView::ExtendedSelection</enum>
     </property>
     <property name="selectionRectVisible">
      <bool>true</bool>

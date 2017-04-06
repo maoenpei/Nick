@@ -22,6 +22,8 @@ public:
 
 private:
     void UpdateView();
+    void UpdateTags();
+    void SyncSelection();
 };
 
 }

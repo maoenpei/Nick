@@ -19,6 +19,11 @@ public:
     {
         m_item->Enter();
     }
+
+    Model::ITagViewItem* Item()
+    {
+        return m_item;
+    }
 };
 
 TagMainWindow::TagMainWindow()
@@ -33,21 +38,29 @@ void TagMainWindow::Initialize(Model::ITagViewModel* viewModel)
 {
     m_spViewModel.reset(viewModel);
     UpdateView();
-    m_spViewModel->addListener([this](){
+    m_spViewModel->addItemListener([this](){
         UpdateView();
     });
-    connect(m_UI->ItemsList, &QListWidget::itemDoubleClicked, this, [](QListWidgetItem *item) {
-        EnterWidgetItem* enterItem = static_cast<EnterWidgetItem*>(item);
+    connect(m_UI->ItemsList, &QListWidget::itemDoubleClicked, this, [](QListWidgetItem *widgetItem) {
+        EnterWidgetItem* enterItem = static_cast<EnterWidgetItem*>(widgetItem);
         enterItem->Enter();
     });
+    connect(m_UI->ItemsList, &QListWidget::itemSelectionChanged, this, [this]() {
+        SyncSelection();
+    });
     connect(m_UI->AddressInput, &QLineEdit::textChanged, this, [this](const QString& text) {
-        m_spViewModel->setPath(text.toStdString());
+        m_spViewModel->setPath(text.toLocal8Bit().constData());
     });
     connect(m_UI->upButton, &QPushButton::clicked, this, [this]() {
         auto item = m_spViewModel->Parent();
         if (item) {
             item->Enter();
         }
+    });
+    connect(m_UI->TagsInput, &QLineEdit::returnPressed, m_UI->addButton, &QPushButton::click);
+    connect(m_UI->addButton, &QPushButton::clicked, this, [this]() {
+        m_spViewModel->AddTag(m_UI->TagsInput->text().toLocal8Bit().constData());
+        UpdateTags();
     });
 }
 
@@ -62,6 +75,27 @@ void TagMainWindow::UpdateView()
         m_UI->ItemsList->addItem(new EnterWidgetItem(item, m_UI->ItemsList));
     }
     m_UI->upButton->setEnabled(m_spViewModel->Parent() != nullptr);
+}
+
+void TagMainWindow::UpdateTags()
+{
+    std::vector<std::string> tags = m_spViewModel->CommonTags();
+    m_UI->CurrentTagsList->clear();
+    for (auto& tag : tags) {
+        m_UI->CurrentTagsList->addItem(new QListWidgetItem(QString::fromLocal8Bit(tag.c_str())));
+    }
+}
+
+void TagMainWindow::SyncSelection()
+{
+    auto widgetItems = m_UI->ItemsList->selectedItems();
+    std::vector<Model::ITagViewItem*> items;
+    for (auto widgetItem : widgetItems) {
+        EnterWidgetItem* enterItem = static_cast<EnterWidgetItem*>(widgetItem);
+        items.push_back(enterItem->Item());
+    }
+    m_spViewModel->Select(items);
+    UpdateTags();
 }
 
 }

@@ -12,27 +12,29 @@ class TagContainer : public ITagContainer
 {
     std::vector<std::string> m_tags;
 public:
-    virtual void AddTag(const std::string& tag)
+    virtual void AddTag(const std::string& tag) override
     {
-        auto itr = std::find_if(m_tags.begin(), m_tags.end(), [&tag](const std::string& str) {
-            return tag == str;
-        });
+        auto itr = std::find(m_tags.begin(), m_tags.end(), tag);
         if (itr == m_tags.end()) {
             m_tags.push_back(tag);
         }
     }
 
-    virtual void DelTag(const std::string& tag)
+    virtual void DelTag(const std::string& tag) override
     {
-        auto itr = std::find_if(m_tags.begin(), m_tags.end(), [&tag](const std::string& str) {
-            return tag == str;
-        });
+        auto itr = std::find(m_tags.begin(), m_tags.end(), tag);
         if (itr != m_tags.end()) {
             m_tags.erase(itr);
         }
     }
 
-    virtual const std::vector<std::string>& Tags() const
+    virtual bool HasTag(const std::string& tag) override
+    {
+        auto itr = std::find(m_tags.begin(), m_tags.end(), tag);
+        return itr != m_tags.end();
+    }
+
+    virtual const std::vector<std::string>& Tags() const override
     {
         return m_tags;
     }
@@ -47,7 +49,7 @@ void TagDirManager::Initialize(const std::string& path)
     m_TagsInfo.clear();
     Filesystem::read_file(path, [this](const std::string& line) {
         std::unique_ptr<TagContainer> item(new TagContainer());
-        auto results = Stringutil::split(line, " ");
+        auto results = Stringutil::split(line, "|");
         if (results.size() <= 1) {
             return true;
         }
@@ -78,7 +80,7 @@ void TagDirManager::Finalize()
 
         line = itr->first;
         for (const auto& tag : *pTags) {
-            line += " ";
+            line += "|";
             line += tag;
         }
         ++itr;
@@ -96,6 +98,27 @@ ITagContainer* TagDirManager::Container(const std::string& key)
     std::unique_ptr<TagContainer> item(new TagContainer());
     m_TagsInfo[key] = std::move(item);
     return m_TagsInfo[key].get();
+}
+
+std::vector<std::string> TagDirManager::CommonTags(const std::vector<ITagContainer*>& containers)
+{
+    std::vector<std::string> tags;
+    bool isFirst = true;
+    for (auto container : containers) {
+        const auto& sTags = container->Tags();
+        if (!sTags.empty()) {
+            if (isFirst) {
+                isFirst = false;
+                tags = sTags;
+            } else {
+                auto itr = std::remove_if(tags.begin(), tags.end(), [container](const std::string& tag) {
+                    return !container->HasTag(tag);
+                });
+                tags.erase(itr, tags.end());
+            }
+        }
+    }
+    return tags;
 }
 
 }

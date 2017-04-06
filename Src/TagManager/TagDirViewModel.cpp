@@ -1,7 +1,6 @@
 
 #include "TagDirViewModel.h"
 #include <TagDirManager.h>
-//#include <windows.h>
 #include <Filesystem.h>
 
 namespace Model{
@@ -12,6 +11,7 @@ protected:
     TagDirViewModel* m_model;
     std::string m_name;
     ITagContainer* m_container;
+    bool m_selected;
 
     std::string location()
     {
@@ -29,20 +29,36 @@ public:
     TagDirViewItem(TagDirViewModel* model, const std::string& name)
         : m_model(model)
         , m_name(name)
+        , m_selected(false)
     {
         m_container = m_model->m_manager->Container(location() + "/" + m_name);
     }
 
-    virtual std::string Name() const
+    bool isSelected()
+    {
+        return m_selected;
+    }
+
+    void Select(bool isSelected)
+    {
+        m_selected = isSelected;
+    }
+
+    ITagContainer* Container()
+    {
+        return m_container;
+    }
+
+    virtual std::string Name() const override
     {
         return m_name;
     }
-    virtual const std::vector<std::string>& Tags() const
+    virtual const std::vector<std::string>& Tags() const override
     {
         return m_container->Tags();
     }
 
-    virtual void Enter()
+    virtual void Enter() override
     {
         open(location() + "/" + m_name);
     }
@@ -110,7 +126,7 @@ void TagDirViewModel::refresh(const std::string& path)
         }
     }
     if (Filesystem::is_directory(path + "/..")) {
-    //    MessageBoxA(NULL, (path + "/..").c_str(), "fff", 64);
+        // boost doesn'r provide '.' / '..' folder
     }
     m_parent.reset(Filesystem::is_directory(path + "/..") ? new DirDotDotViewItem(this) : nullptr);
     m_listeners();
@@ -148,9 +164,51 @@ ITagViewItem* TagDirViewModel::Parent() const
     return m_parent.get();
 }
 
-void TagDirViewModel::addListener(std::function<void(void)> listener)
+void TagDirViewModel::addItemListener(std::function<void(void)> listener)
 {
     m_listeners.Connect(listener);
+}
+
+std::vector<ITagContainer*> TagDirViewModel::selectedContainers()
+{
+    std::vector<ITagContainer*> containers;
+    for (auto& item : m_children) {
+        if (item->isSelected()) {
+            containers.push_back(item->Container());
+        }
+    }
+    return containers;
+}
+
+void TagDirViewModel::Select(const std::vector<ITagViewItem*>& items)
+{
+    for (auto& item : m_children) {
+        item->Select(false);
+    }
+    for (auto item : items) {
+        static_cast<TagDirViewItem*>(item)->Select(true);
+    }
+}
+
+std::vector<std::string> TagDirViewModel::CommonTags()
+{
+    return m_manager->CommonTags(selectedContainers());
+}
+
+void TagDirViewModel::AddTag(const std::string& tag)
+{
+    auto containers = selectedContainers();
+    for (auto container : containers) {
+        container->AddTag(tag);
+    }
+}
+
+void TagDirViewModel::DelTag(const std::string& tag)
+{
+    auto containers = selectedContainers();
+    for (auto container : containers) {
+        container->DelTag(tag);
+    }
 }
 
 }

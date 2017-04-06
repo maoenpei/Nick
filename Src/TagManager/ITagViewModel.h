@@ -29,7 +29,12 @@ public:
     virtual std::vector<ITagViewItem*> Children() const = 0;
     virtual ITagViewItem* Parent() const = 0;
 
-    virtual void addListener(std::function<void(void)> listener) = 0;
+    virtual void addItemListener(std::function<void(void)> listener) = 0;
+
+    virtual void Select(const std::vector<ITagViewItem*>& items) = 0;
+    virtual std::vector<std::string> CommonTags() = 0;
+    virtual void AddTag(const std::string& tag) = 0;
+    virtual void DelTag(const std::string& tag) = 0;
 };
 
 }
