@@ -7,4 +7,10 @@ add_subdirectory(Third)
 
 include(main.cmake)
 
-add_subdirectory(Nick)
+SubDirList(FOLDERS ${ROOT_DIR})
+foreach(FOLDER ${FOLDERS})
+    if (EXISTS "${ROOT_DIR}/${FOLDER}/Project.txt")
+        DeclareProject(${FOLDER})
+        add_subdirectory(${FOLDER})
+    endif()
+endforeach()
