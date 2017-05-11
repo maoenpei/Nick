@@ -16,6 +16,7 @@ GetOptions(
     'release|r!' => \$release,
 );
 
+my $proj = @ARGV[0];
 my $args = join(" ", @ARGV);
 print "args: $args\n";
 
@@ -63,7 +64,7 @@ if ($variant eq "vs") {
 sub BuildVsProject{
     $varName = "vs_win32";
     $cmake_gen = "Visual Studio 14 2015 Win64";
-    $post_cmd = "$VsEnvScript x64 && devenv Nick.sln /Build";
+    $post_cmd = "$VsEnvScript x64 && devenv ${proj}.sln /Build";
     $cmake_args{CMAKE_CONFIGURATION_TYPES} = $building_type;
 }
 
@@ -71,7 +72,7 @@ sub BuildNinjaProject{
     $varName = "ninja_win32";
     $cmake_gen = "Ninja";
     $pre_cmd = "$VsEnvScript x64";
-    $post_cmd = "$ninja Nick $args";
+    $post_cmd = "$ninja $args";
     if ($verbose) {
         $post_cmd = "$post_cmd -v";
     }

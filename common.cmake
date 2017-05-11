@@ -32,12 +32,30 @@ macro(GenerateRef REF_NAME FILE_PATH)
     #string(REGEX REPLACE "[/\\: ()]" "_" ${REF_NAME} ${FILE_PATH})
 endmacro()
 
-# have to define PROJ_DEPLOY BUILD_TARGET
+macro(SubDirList result curdir)
+  file(GLOB children RELATIVE ${curdir} ${curdir}/*)
+  set(dirlist "")
+  foreach(child ${children})
+    if(IS_DIRECTORY ${curdir}/${child})
+      list(APPEND dirlist ${child})
+    endif()
+  endforeach()
+  set(${result} ${dirlist})
+endmacro()
+
+macro(DeclareProject projName)
+    set(BUILD_TARGET ${projName} CACHE STRING "" FORCE)
+    set(PROJ_DEPLOY_DIR "${PROJ_DEPLOY}/${projName}" CACHE STRING "" FORCE)
+    add_custom_target(${projName})
+    project(${projName})
+endmacro()
+
+# have to define PROJ_DEPLOY_DIR BUILD_TARGET
 function(DeployTargetToTarget TARGET_NAME OWNER_TARGET)
     get_target_property(TargetPath ${TARGET_NAME} LOCATION)
     get_filename_component(TargetName ${TargetPath} NAME)
 
-    set(DestinationPath ${PROJ_DEPLOY}/${TargetName})
+    set(DestinationPath ${PROJ_DEPLOY_DIR}/${TargetName})
     add_custom_command(
         OUTPUT ${DestinationPath}
         COMMAND ${CMAKE_COMMAND} -E copy ${TargetPath} ${DestinationPath}
@@ -57,7 +75,7 @@ endfunction()
 function(DeployFileToTarget FILE_PATH OWNER_TARGET)
     get_filename_component(TargetName ${FILE_PATH} NAME)
 
-    set(DestinationPath ${PROJ_DEPLOY}/${TargetName})
+    set(DestinationPath ${PROJ_DEPLOY_DIR}/${TargetName})
     add_custom_command(
         OUTPUT ${DestinationPath}
         COMMAND ${CMAKE_COMMAND} -E copy ${FILE_PATH} ${DestinationPath}

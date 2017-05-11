@@ -31,14 +31,11 @@ foreach(VAR ${QT_MODULES})
 endforeach()
 set(QT_SHARED ${QT_SHARED_FILES} CACHE STRING "" FORCE)
 
-add_custom_target(QtSharedLibraries)
-foreach(VAR ${QT_SHARED})
-    DeployFileToTarget(${VAR} QtSharedLibraries)
-endforeach()
-
 function(AddQtDependencies TARGET)
     target_link_libraries(${TARGET} ${QT_LIBRARIES})
-    add_dependencies(${TARGET} QtSharedLibraries)
+    foreach(VAR ${QT_SHARED})
+        DeployFileToTarget(${VAR} ${TARGET})
+    endforeach()
 endfunction()
 
 function(AddQtExecutable TARGET)
